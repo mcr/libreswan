@@ -1263,14 +1263,23 @@ static void ikev2_parent_inR1outI2_continue(struct pluto_crypto_req_cont *pcrc,
 }
 
 /*
- * Pad message for CBC-mode encryption. Should not be called for CTR or CCM/GCM
- * Octets are added to make the message a multiple of the cipher block size.
- * At least one octet is added and at most blocksize are added.
- * The first is 0, and each subsequent octet is one larger.
- * Thus the last octet contains one less than the number of octets added.
+ * Pad message for CBC-mode encryption. Should not be called for CTR,
+ * CCM or GCM.  eg from RFC 5930:
+ *
+ * When AES-CTR is used in IKEv2, no padding is required.  The Padding
+ * field of the Encrypted Payload SHOULD be empty, and the Pad Length
+ * field SHOULD be zero.  However, according to [RFC4306], the recipient
+ * MUST accept any length that results in proper alignment.  It should
+ * be noted that the ESP [RFC4303] Encrypted Payload requires alignment
+ * on a 4-byte boundary while the IKEv2 [RFC4306] Encrypted Payload does
+ * not have such a requirement.
+ *
+ * For CBC mode ciphers, octets are added to make the message a multiple
+ * of the cipher block size. At least one octet is added and at most
+ * blocksize are added. The first is 0, and each subsequent octet is one
+ * larger. Thus the last octet contains one less than the number of octets
+ * added.
  */
-static bool ikev2_padup_pre_encrypt(struct state *st,
-				    pb_stream *e_pbs_cipher) MUST_USE_RESULT;
 static bool ikev2_padup_pre_encrypt(struct state *st,
 				    pb_stream *e_pbs_cipher)
 {
@@ -1278,6 +1287,22 @@ static bool ikev2_padup_pre_encrypt(struct state *st,
 
 	if (IS_CHILD_SA(st))
 		pst = state_with_serialno(st->st_clonedfrom);
+
+	switch(pst->st_oakley.encrypter->common.algo_v2id) {
+        case IKEv2_ENCR_AES_CTR:
+        case IKEv2_ENCR_AES_CCM_8:
+        case IKEv2_ENCR_AES_CCM_12:
+        case IKEv2_ENCR_AES_CCM_16:
+        case IKEv2_ENCR_AES_GCM_8:
+        case IKEv2_ENCR_AES_GCM_12:
+        case IKEv2_ENCR_AES_GCM_16:
+        case IKEv2_ENCR_CAMELLIA_CBC:
+        case IKEv2_ENCR_CAMELLIA_CTR:
+        case IKEv2_ENCR_CAMELLIA_CCM_A:
+        case IKEv2_ENCR_CAMELLIA_CCM_B:
+        case IKEv2_ENCR_CAMELLIA_CCM_C:
+		return TRUE;
+	}
 
 	/* pads things up to message size boundary */
 	{
@@ -1291,8 +1316,10 @@ static bool ikev2_padup_pre_encrypt(struct state *st,
 
 		for (i = 0; i < padding; i++)
 			b[i] = i;
-		if (!out_raw(b, padding, e_pbs_cipher, "padding and length"))
+		if (!out_raw(b, padding, e_pbs_cipher, "padding and length")) {
+			libreswan_log("error CBC padding before encryption payload");
 			return FALSE;
+		}
 	}
 	return TRUE;
 }
@@ -3922,7 +3949,6 @@ static bool ikev2_delete_out_guts(struct state *const st, struct state *const ps
 	}
 
 	if (!ikev2_padup_pre_encrypt(st, &e_pbs_cipher)) {
-		libreswan_log("error padding before encryption in delete payload");
 		return FALSE;
 	}
 
