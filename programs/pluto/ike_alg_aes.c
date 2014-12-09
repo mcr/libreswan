@@ -190,7 +190,6 @@ static struct hash_desc hash_desc_aes_xcbc = {
         .hash_final = aes_xcbc_final_thunk,
 };
 
-#ifdef NOT_YET
 static struct hash_desc integ_desc_aes_xcbc = {
         .common = { .officname =  "aes_xcbc",
                     .algo_type = IKE_ALG_INTEG,
@@ -206,7 +205,6 @@ static struct hash_desc integ_desc_aes_xcbc = {
         .hash_update = aes_xcbc_write_thunk,
         .hash_final = aes_xcbc_final_thunk,
 };
-#endif
 
 void ike_alg_aes_init(void)
 {
@@ -218,6 +216,7 @@ void ike_alg_aes_init(void)
 	/* Waiting on NSS support - but we need registration so ESP will work */
 	if (ike_alg_register_hash(&hash_desc_aes_xcbc) != 1)
 		loglog(RC_LOG_SERIOUS, "Warning: failed to register hash algo_aes_xcbc for IKE");
+#warning NSS does not support aes_xcbc yet - not registering it for IKE
 #if 0
 	ike_alg_add(&integ_desc_aes_xcbc.common);
 #endif

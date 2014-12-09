@@ -1161,12 +1161,12 @@ static const char *const oakley_enc_name[] = {
 	"OAKLEY_3DES_CBC",
 	"OAKLEY_CAST_CBC",
 	"OAKLEY_AES_CBC",
-	"DISABLED-OAKLEY_CAMELLIA_CBC", /* 8 */
+	"OAKLEY_CAMELLIA_CBC", /* 8 */
 	"UNUSED_9",
 	"UNUSED_10",
 	"UNUSED_11",
 	"UNUSED_12",
-	"DISABLED-OAKLEY_AES_CTR", /* stolen from IKEv2 */
+	"OAKLEY_AES_CTR", /* stolen from IKEv2 */
 	"OAKLEY_AES_CCM_A",
 	"OAKLEY_AES_CCM_B",
 	"OAKLEY_AES_CCM_16",
@@ -1235,7 +1235,7 @@ static const char *const oakley_hash_name[] = {
 	"OAKLEY_SHA2_512",	/* RFC 4878 */
 	"UNUSED_7",
 	"UNUSED_8",
-	"DISABLED-OAKLEY_AES_XCBC" /* stolen from ikev2 */
+	"OAKLEY_AES_XCBC" /* stolen from ikev2 */
 	/* 7-65000 Unassigned */
 	/* 65001-65535 Reserved for private use */
 };

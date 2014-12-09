@@ -94,18 +94,15 @@ static CK_MECHANISM_TYPE nss_encryption_mech(
 	case OAKLEY_3DES_CBC:
 		mechanism = CKM_DES3_CBC;
 		break;
-#ifdef NOT_YET
 	case OAKLEY_CAST_CBC:
-		mechanism = CKM_CAST5_CBC:
+		mechanism = CKM_CAST5_CBC;
 		break;
-#endif
 	case OAKLEY_AES_CBC:
 		mechanism = CKM_AES_CBC;
 		break;
 	case OAKLEY_CAMELLIA_CBC:
 		mechanism = CKM_CAMELLIA_CBC;
 		break;
-#ifdef NOT_YET
 	case OAKLEY_AES_CTR:
 		mechanism = CKM_AES_CTR;
 		break;
@@ -122,7 +119,6 @@ static CK_MECHANISM_TYPE nss_encryption_mech(
 	case OAKLEY_TWOFISH_CBC:
 		mechanism = CKM_TWOFISH_CBC;
 		break;
-#endif
 	default:
 		loglog(RC_LOG_SERIOUS,
 			"NSS: Unsupported encryption mechanism for %s",
