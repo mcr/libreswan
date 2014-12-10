@@ -1296,7 +1296,6 @@ static bool ikev2_padup_pre_encrypt(struct state *st,
         case IKEv2_ENCR_AES_GCM_8:
         case IKEv2_ENCR_AES_GCM_12:
         case IKEv2_ENCR_AES_GCM_16:
-        case IKEv2_ENCR_CAMELLIA_CBC:
         case IKEv2_ENCR_CAMELLIA_CTR:
         case IKEv2_ENCR_CAMELLIA_CCM_A:
         case IKEv2_ENCR_CAMELLIA_CCM_B:
