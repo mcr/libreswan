@@ -1,0 +1,5 @@
+Basic pluto with IKEv2 using PSK on the initiator (west), and Strongswan on
+the responder testing CAMELLIA for ESP
+
+This might require strongswan-5.2.1 with --enable-gcrypt to get proper
+camellia support.  The stock fedora build did not work.
