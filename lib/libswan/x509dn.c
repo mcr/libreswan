@@ -1349,6 +1349,8 @@ static bool decrypt_sig(chunk_t sig, int alg, const x509cert_t *issuer_cert,
 			loglog(RC_LOG_SERIOUS,
                                "NSS: signature FAILED verification; PK11_VerifyRecover() failed (%d) to recover digest",
 				PR_GetError());
+                        SECKEY_DestroyPublicKey(publicKey);
+                        return FALSE;
 		}
 
 		SECKEY_DestroyPublicKey(publicKey);
